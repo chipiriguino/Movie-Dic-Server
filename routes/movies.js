@@ -14,10 +14,8 @@ router.get("/", async(req, res, next) => {
   }
 });
 
-router.get("/top-rated", async(req, res, next) => {
-
+router.get("/random", async(req, res, next) => {
   try {
-    
     let moviesrandom = await Movie.find()
     let moviesran =Math.floor(Math.random()*moviesrandom.length)
     res.status(200).json(moviesrandom[moviesran])
@@ -77,12 +75,6 @@ router.get("/top-rated", async(req, res, next) => {
 //   ).then((user) => console.log("The movie was created!"));
 // }
 // );
-
-
-
-
-
-
 
 
 module.exports = router;
