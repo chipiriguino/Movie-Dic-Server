@@ -33,6 +33,15 @@ try {
 }
 });
 
+router.get("/movies", async(req, res, next) => {
+  try {
+    let movies = await Movie.find()
+    res.status(200).json(movies)
+  } catch (error) {
+    console.log(error)
+  }
+  });
+
 router.get("/top-rated", async(req, res, next) => {
   try {
     let movies = await Movie.find()
