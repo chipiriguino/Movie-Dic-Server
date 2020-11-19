@@ -35,7 +35,7 @@ try {
 
 router.get("/movies", async(req, res, next) => {
   try {
-    let movies = await Movie.find()
+    let movies = await Movie.find().limit(20)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
