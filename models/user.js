@@ -5,8 +5,8 @@ const userSchema = new Schema({
   username: String,
   password: String,
   mail: String,
-  image: String,
-  favorites: [],
+  image: {type: String, default: 'https://www.tuexperto.com/wp-content/uploads/2015/07/perfil_01.jpg'},
+  favorites: []
 }, {
   timestamps: {
     createdAt: 'created_at',
