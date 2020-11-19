@@ -24,6 +24,24 @@ router.get("/random", async(req, res, next) => {
   }
 });
 
+router.get("/popular", async(req, res, next) => {
+try {
+  let movies = await Movie.find({imdb_score:{$gte: "8"}})
+  res.status(200).json(movies)
+} catch (error) {
+  console.log(error)
+}
+});
+
+router.get("/top-rated", async(req, res, next) => {
+  try {
+    let movies = await Movie.find()
+    res.status(200).json(movies)
+  } catch (error) {
+    console.log(error)
+  }
+  });
+
 // ADD MOVIE
 
 // router.get("/myprofile/add-movie", withAuth, function (req, res, next) {
@@ -75,6 +93,8 @@ router.get("/random", async(req, res, next) => {
 //   ).then((user) => console.log("The movie was created!"));
 // }
 // );
+
+router
 
 
 module.exports = router;
