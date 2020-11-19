@@ -60,57 +60,19 @@ router.get("/top-rated", async(req, res, next) => {
     }
     });
 
-// ADD MOVIE
+    router.post('/movies/create', (req, res, next) => {
+      // console.log('body: ', req.body); ==> here we can see that all
+      // the fields have the same names as the ones in the model so we can simply pass
+      // req.body to the .create() method
+      
+      Movie.create(req.body)
+      .then( aNewMovie => {
+          // console.log('Created new movie: ', aNewMovie);
+          res.status(200).json(aNewMovie);
+      })
+      .catch( err => next(err) )
+  })
 
-// router.get("/myprofile/add-movie", withAuth, function (req, res, next) {
-//   res.render("/add-event");
-// });
-
-// router.post(
-//   "/myprofile/add-movie",
-//   uploadCloud.single("photo"),
-//   withAuth,
-//   async (req, res, next) => {
-//     const { name, description } = req.body;
-
-//   if (name.length < 5) {
-//       res.render("/myprofile/add-movie", {
-//         errorMessage: "Your event name should have at least 5 characters",
-//       });
-//       return;
-//     } else if (description.length < 5) {
-//       res.render("/myprofile/add-movie", {
-//         errorMessage: "Write a longer description!",
-//       });
-//       return;
-//     }
-//   try {
-//     const addMovie = await Event.findOne({ name: name});
-//     if (addMovie !== null) {
-//       res.render("/myprofile/add-movie", {
-//         errorMessage: "This movie already exists!",
-//       });
-//       return;
-//     }
-
-//     const imgPath = req.file.url;
-
-//     await Event.create({
-//       name,
-//       description,
-//       imgPath,
-//     });
-//     res.redirect("all-events");
-//   } catch (error) {
-//     next(error);
-//   }
-//   User.findOneAndUpdate(
-//     { _id: req.session.currentUserInfo._id },
-//     { $push: { movies: addMovie.id } },
-//     { new: true }
-//   ).then((user) => console.log("The movie was created!"));
-// }
-// );
 
 router
 
