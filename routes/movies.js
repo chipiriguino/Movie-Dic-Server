@@ -51,6 +51,15 @@ router.get("/top-rated", async(req, res, next) => {
   }
   });
 
+  router.get("/details/:id", async(req, res, next) => {
+    try {
+      let movies = await Movie.findById(req.params.id)
+      res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+    });
+
 // ADD MOVIE
 
 // router.get("/myprofile/add-movie", withAuth, function (req, res, next) {
