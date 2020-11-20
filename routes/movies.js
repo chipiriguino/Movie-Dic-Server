@@ -100,13 +100,13 @@ const Movie = require('../models/movie');
 
   router.post("/upload/:id", async(req, res, next) => {
     try {
-    const {movie_title, genres, director_name} = req.body;
-    const poster = req.file;
-    const imgName = req.file.originalname;
+    const {movie_title, genres, director_name, poster} = req.body.updatedMovie;
+ 
     const movieId = req.params.id
 
     let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, director_name }, {new: true})
     //let movies = await Movie.findByIdAndUpdate(req.params.id)
+    console.log(movies)
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
