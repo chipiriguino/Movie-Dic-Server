@@ -124,17 +124,33 @@ const Movie = require('../models/movie');
     }
   });
 
-  // router.post("/delete/:id", async (req, res, next) => {
-  // //    // console.log('body: ', req.body); ==> here we can see that all
-  //     // the fields have the same names as the ones in the model so we can simply pass
-  //     // req.body to the .create() method
-      
-  //     Movie.findByIdAndDelete(req.body)
-  //     .then( deleteMovie => {
-  //         // console.log('Created new movie: ', aNewMovie);
-  //         res.status(200).json(deleteMovie);
-  //     })
-  //     .catch( err => next(err) )
-  // });
+  //FAVOURITE ROUTES
+
+  router.get("/favorites-movies", async (req, res, next) => {
+    const userId = req.user;
+    console.log(userId);
+    try {
+      const user = await User.findById(userId).populate('favorites')
+      console.log(user)
+      console.log(userId, "this is the user id");
+      res.status(200).json()
+    } catch (error) {
+      next(error);
+      return;
+    }
+  });
+  router.post("/favorites-movies", async (req, res, next) => {
+    try {
+      console.log("entered the route");
+      const { user_id, movie_id } = req.body;
+        await User.findByIdAndUpdate(
+          user_id,
+          {   favorites: movie_id },
+          { new: true }
+        )
+        console.log("Saved in the db!");
+        res.status(200).json("Añadido a favoritos correctamente!")
+    } catch (error) {console.log(error)}
+  });
 
 module.exports = router;
