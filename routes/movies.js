@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
-// const User = require("../models/user");
+const User = require("../models/user");
 const Movie = require('../models/movie');
 
 // FIND MOVIES ROUTE ON DATABASE
@@ -43,7 +43,7 @@ const Movie = require('../models/movie');
 
   router.get("/movies", async(req, res, next) => {
   try {
-    let movies = await Movie.find().limit(20)
+    let movies = await Movie.find()        //.limit(20)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
@@ -126,7 +126,7 @@ const Movie = require('../models/movie');
 
   //FAVOURITE ROUTES
 
-  router.get("/favorites-movies", async (req, res, next) => {
+  router.get("/private/favorite", async (req, res, next) => {
     const userId = req.user;
     console.log(userId);
     try {
@@ -139,13 +139,13 @@ const Movie = require('../models/movie');
       return;
     }
   });
-  router.post("/favorites-movies", async (req, res, next) => {
+  router.post("/private/favorite", async (req, res, next) => {
     try {
       console.log("entered the route");
-      const { user_id, movie_id } = req.body;
+      const { userId, movieId } = req.body;
         await User.findByIdAndUpdate(
-          user_id,
-          {   favorites: movie_id },
+          userId,
+          {   $push: {favorites: movieId} },
           { new: true }
         )
         console.log("Saved in the db!");
