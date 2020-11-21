@@ -43,7 +43,7 @@ const Movie = require('../models/movie');
 
   router.get("/movies", async(req, res, next) => {
   try {
-    let movies = await Movie.find()        //.limit(20)
+    let movies = await Movie.find().limit(20)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
@@ -149,7 +149,7 @@ const Movie = require('../models/movie');
           { new: true }
         )
         console.log("Saved in the db!");
-        res.status(200).json("Añadido a favoritos correctamente!")
+        res.status(200).json(req.body.movie)
     } catch (error) {console.log(error)}
   });
 
