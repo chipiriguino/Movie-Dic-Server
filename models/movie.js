@@ -6,7 +6,16 @@ const thingSchema = new Schema({
     director_name: { type: String },
     poster: { type: String},
     genres: { type: String },
-    description: {type: String}
+    description: {type: String},
+    content_rating: {type: String},
+    country: {type: String},
+    language: {type: String},
+    movie_imdb_link: {type: String},
+    actor_1_name: {type: String},
+    actor_2_name: {type: String},
+    actor_3_name: {type: String},
+    title_year: {type: String},
+    imdb_score: {type: String}
 })
 
 const Movie = mongoose.model('Movie', thingSchema);
