@@ -32,7 +32,7 @@ const Movie = require('../models/movie');
 
   router.get("/popular", async(req, res, next) => {
   try {
-    let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(30)
+    let movies = await Movie.find({imdb_score:{$gte: "9"}}).limit(30)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
