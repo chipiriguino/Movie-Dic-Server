@@ -6,7 +6,7 @@ const Movie = require('../models/movie');
 
 // FIND MOVIES ROUTE ON DATABASE
 
-  router.get("/home", async(req, res, next) => {
+  router.get("/", async(req, res, next) => {
       const { limit } = req.query
     try {
       let movies = await Movie.find().limit(30)
@@ -100,11 +100,11 @@ const Movie = require('../models/movie');
 
   router.post("/upload/:id", async(req, res, next) => {
     try {
-    const {movie_title, genres, director_name, poster} = req.body.updatedMovie;
+    const {movie_title, genres, director_name,description, poster} = req.body.updatedMovie;
  
     const movieId = req.params.id
 
-    let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, director_name }, {new: true})
+    let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, description, director_name }, {new: true})
     //let movies = await Movie.findByIdAndUpdate(req.params.id)
     console.log(movies)
       res.status(200).json(movies)
