@@ -6,10 +6,10 @@ const Movie = require('../models/movie');
 
 // FIND MOVIES ROUTE ON DATABASE
 
-  router.get("/", async(req, res, next) => {
+  router.get("/home", async(req, res, next) => {
       const { limit } = req.query
     try {
-      let movies = await Movie.find()
+      let movies = await Movie.find().limit(30)
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
@@ -32,7 +32,7 @@ const Movie = require('../models/movie');
 
   router.get("/popular", async(req, res, next) => {
   try {
-    let movies = await Movie.find({imdb_score:{$gte: "8"}})
+    let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(30)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
@@ -126,8 +126,20 @@ const Movie = require('../models/movie');
 
   //FAVOURITE ROUTES
 
+  // router.get("/private", async (req, res, next) =>{
+  //   try {
+  //     const movieFav = await Movie.findById(favorites)
+  //     console.log(movieFav, "this is the MOVIE id")
+  //     res.status(200).json()
+  //   } catch (error) {
+  //     next(error);
+  //     return;
+  //   }
+  // })
+
+
   router.get("/private/favorite", async (req, res, next) => {
-    const userId = req.user;
+    const userId = req.currentUser;
     console.log(userId);
     try {
       const user = await User.findById(userId).populate('favorites')
@@ -147,9 +159,9 @@ const Movie = require('../models/movie');
           userId,
           {   $push: {favorites: movieId} },
           { new: true }
-        )
+        ).populate()
         console.log("Saved in the db!");
-        res.status(200).json(req.body.movie)
+        res.status(200).json("Añadido a favoritos correctamente!")
     } catch (error) {console.log(error)}
   });
 
