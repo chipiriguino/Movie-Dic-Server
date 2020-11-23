@@ -50,6 +50,8 @@ const Movie = require('../models/movie');
   }
   });
 
+
+
   // TOP-RATED ROUTE
 
   router.get("/top-rated", async(req, res, next) => {
@@ -60,6 +62,7 @@ const Movie = require('../models/movie');
     console.log(error)
   }
   });
+
 
   // DETAILS ROUTE
 
