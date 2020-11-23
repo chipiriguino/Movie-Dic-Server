@@ -52,7 +52,7 @@ const Movie = require('../models/movie');
 
   router.get("/movies/carrousel", async(req, res, next) => {
     try {
-      let movies = await Movie.find().limit(8)
+      let movies = await Movie.find().limit(10)
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
@@ -148,14 +148,14 @@ const Movie = require('../models/movie');
   // })
 
 
-  router.get("/private/favorite", async (req, res, next) => {
-    const userId = req.currentUser;
+  router.get("/private/favorite/:id", async (req, res, next) => {
+    const userId = req.params.id;
     console.log(userId);
     try {
       const user = await User.findById(userId).populate('favorites')
       console.log(user)
       console.log(userId, "this is the user id");
-      res.status(200).json()
+      res.status(200).json(user)
     } catch (error) {
       next(error);
       return;
@@ -169,7 +169,7 @@ const Movie = require('../models/movie');
           userId,
           {   $push: {favorites: movieId} },
           { new: true }
-        ).populate()
+        ).populate('favorites')
         console.log("Saved in the db!");
         res.status(200).json("Añadido a favoritos correctamente!")
     } catch (error) {console.log(error)}
