@@ -50,7 +50,15 @@ const Movie = require('../models/movie');
   }
   });
 
-
+  router.get("/movies/carrousel", async(req, res, next) => {
+    try {
+      let movies = await Movie.find().limit(8)
+      res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+    });
+  
 
   // TOP-RATED ROUTE
 
