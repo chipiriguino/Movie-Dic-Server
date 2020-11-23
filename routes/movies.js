@@ -41,18 +41,39 @@ const Movie = require('../models/movie');
 
   // GET MOVIES ROUTE
 
-  router.get("/movies", async(req, res, next) => {
+  router.get("/allmovies", async(req, res, next) => {
   try {
-    let movies = await Movie.find().limit(20)
+    let movies = await Movie.find().limit(30)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
   }
   });
 
+  router.get("/movies", async(req, res, next) => {
+    try {
+      let movies = await Movie.find().limit(50)
+      res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+    });
+    
+    
+    router.get("/search", async(req, res, next) => {
+      try {
+        let movies = await Movie.find({movie_title : new RegExp('^' + req.query.find, "i")
+      }
+        )
+        res.status(200).json(movies)
+      } catch (error) {
+        console.log(error)
+      }
+      });
+
   router.get("/movies/carrousel", async(req, res, next) => {
     try {
-      let movies = await Movie.find().limit(10)
+      let movies = await Movie.find().limit(8)
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
