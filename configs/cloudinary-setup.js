@@ -11,7 +11,7 @@ cloudinary.config({
 var storage = cloudinaryStorage({
   cloudinary,
   folder: 'movie-gallery', 
-  allowedFormats: ['jpg', 'png'],
+  allowedFormats: ['jpg', 'png', 'jpeg', 'webp'],
   filename: function (req, res, cb) {
     let fileName = res.originalname.split(".");
     cb(null, fileName[0]); 
