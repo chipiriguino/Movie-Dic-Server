@@ -9,7 +9,7 @@ const Movie = require('../models/movie');
   router.get("/", async(req, res, next) => {
       const { limit } = req.query
     try {
-      let movies = await Movie.find().limit(30)
+      let movies = await Movie.find()
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
@@ -42,22 +42,23 @@ const Movie = require('../models/movie');
   // GET MOVIES ROUTE
 
   router.get("/allmovies", async(req, res, next) => {
+    let perpage = 20;
   try {
-    let movies = await Movie.find().limit(30)
+    let movies = await Movie.find().limit(perpage).skip(req.query.page*30)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
   }
   });
 
-  router.get("/movies", async(req, res, next) => {
-    try {
-      let movies = await Movie.find().limit(50)
-      res.status(200).json(movies)
-    } catch (error) {
-      console.log(error)
-    }
-    });
+  // router.get("/movies", async(req, res, next) => {
+  //   try {
+  //     let movies = await Movie.find().limit(50)
+  //     res.status(200).json(movies)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  //   });
     
     
     router.get("/search", async(req, res, next) => {
