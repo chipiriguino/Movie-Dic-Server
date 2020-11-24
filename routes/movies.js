@@ -41,18 +41,39 @@ const Movie = require('../models/movie');
 
   // GET MOVIES ROUTE
 
-  router.get("/movies", async(req, res, next) => {
+  router.get("/allmovies", async(req, res, next) => {
   try {
-    let movies = await Movie.find().limit(20)
+    let movies = await Movie.find().limit(30)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
   }
   });
 
+  router.get("/movies", async(req, res, next) => {
+    try {
+      let movies = await Movie.find().limit(50)
+      res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+    });
+    
+    
+    router.get("/search", async(req, res, next) => {
+      try {
+        let movies = await Movie.find({movie_title : new RegExp('^' + req.query.find, "i")
+      }
+        )
+        res.status(200).json(movies)
+      } catch (error) {
+        console.log(error)
+      }
+      });
+
   router.get("/movies/carrousel", async(req, res, next) => {
     try {
-      let movies = await Movie.find().limit(10)
+      let movies = await Movie.find().limit(8)
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
@@ -111,10 +132,10 @@ const Movie = require('../models/movie');
 
   router.post("/upload/:id", async(req, res, next) => {
     try {
-    const {movie_title, genres, director_name,description, poster, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score} = req.body.updatedMovie;
+    const {movie_title, genres, director_name,description, poster, fan_art, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score} = req.body.updatedMovie;
     const movieId = req.params.id
 
-    let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, description, director_name, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score }, {new: true})
+    let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, fan_art, description, director_name, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score }, {new: true})
     //let movies = await Movie.findByIdAndUpdate(req.params.id)
     console.log(movies)
       res.status(200).json(movies)

@@ -15,7 +15,8 @@ const thingSchema = new Schema({
     actor_2_name: {type: String},
     actor_3_name: {type: String},
     title_year: {type: String},
-    imdb_score: {type: String}
+    imdb_score: {type: String},
+    fan_art: {type: String}
 })
 
 const Movie = mongoose.model('Movie', thingSchema);
