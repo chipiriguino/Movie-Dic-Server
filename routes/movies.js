@@ -34,6 +34,7 @@ const Movie = require('../models/movie');
   try {
     let perpage = 20;
     let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(perpage).skip(req.query.page*30)
+    console.log('MOVIES BACKEND', movies)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
