@@ -69,6 +69,13 @@ app.use("/auth", auth);
 app.use("/movies", movies)
 app.use("/movies", upload)
 
+// ROUTE FOR SERVING REACT APP (index.html)
+app.use((req, res) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
+
+
 // ERROR HANDLING
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
