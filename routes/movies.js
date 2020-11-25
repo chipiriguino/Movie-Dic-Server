@@ -6,15 +6,15 @@ const Movie = require('../models/movie');
 
 // FIND MOVIES ROUTE ON DATABASE
 
-  router.get("/", async(req, res, next) => {
-      const { limit } = req.query
-    try {
-      let movies = await Movie.find()
-      res.status(200).json(movies)
-    } catch (error) {
-      console.log(error)
-    }
-  });
+  // router.get("/", async(req, res, next) => {
+  //     const { limit } = req.query
+  //   try {
+  //     let movies = await Movie.find()
+  //     res.status(200).json(movies)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // });
 
   // GET RANDOM MOVIE ROUTE
 
