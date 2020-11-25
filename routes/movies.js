@@ -73,7 +73,7 @@ const Movie = require('../models/movie');
       }
       });
 
-  router.get("/movies/carrousel", async(req, res, next) => {
+  router.get("/carrousel", async(req, res, next) => {
     try {
       let movies = await Movie.find().limit(8)
       res.status(200).json(movies)
@@ -82,7 +82,7 @@ const Movie = require('../models/movie');
     }
     });
     
-    router.get("/movies/carrousel2", async(req, res, next) => {
+    router.get("/carrousel2", async(req, res, next) => {
       try {
         let movies = await Movie.find({num_voted_users:{$gte: "44000"}}).limit(8)
         res.status(200).json(movies)
@@ -91,7 +91,7 @@ const Movie = require('../models/movie');
       }
       });
 
-      router.get("/movies/carrousel3", async(req, res, next) => {
+      router.get("/carrousel3", async(req, res, next) => {
         try {
           let movies = await Movie.find({num_voted_users:{$lte: "20000"}}).limit(8)
           res.status(200).json(movies)
