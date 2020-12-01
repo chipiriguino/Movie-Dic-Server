@@ -12,6 +12,7 @@ const cors = require("cors");
 const upload = require("./routes/file-upload-routes")
 const auth = require("./routes/auth");
 const movies = require("./routes/movies")
+
 // MONGOOSE CONNECTION
 mongoose
   .connect(process.env.MONGODB_URI, {

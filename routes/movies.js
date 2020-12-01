@@ -1,12 +1,14 @@
+// ROUTES OF THE APP, INSIDE THIS, I MANAGE ALL THE ROUTES!!!
+
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
 const User = require("../models/user");
 const Movie = require('../models/movie');
+const FeedNews = require ("../models/FeedNews");
 
 
   // GET RANDOM MOVIE ROUTE
-
   router.get("/random", async(req, res, next) => {
     try {
       let moviesrandom = await Movie.find()
@@ -17,12 +19,11 @@ const Movie = require('../models/movie');
     }
   });
 
-  // MOST-POPULAR ROUTE
-
+  // GET MOST-POPULAR ROUTE
   router.get("/popular", async(req, res, next) => {
   try {
     let perpage = 20;
-    let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(perpage).skip(req.query.page*30)
+    let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(perpage).skip(req.query.page*20)
     console.log('MOVIES BACKEND', movies)
     res.status(200).json(movies)
   } catch (error) {
@@ -30,8 +31,7 @@ const Movie = require('../models/movie');
   }
   });
 
-  // GET MOVIES ROUTE
-
+  // GET ALLMOVIES ROUTE
   router.get("/allmovies", async(req, res, next) => {
     let perpage = 20;
   try {
@@ -42,27 +42,18 @@ const Movie = require('../models/movie');
   }
   });
 
-  // router.get("/movies", async(req, res, next) => {
-  //   try {
-  //     let movies = await Movie.find().limit(50)
-  //     res.status(200).json(movies)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  //   });
-    
-    
-    router.get("/search", async(req, res, next) => {
-      try {
-        let movies = await Movie.find({movie_title : new RegExp('^' + req.query.find, "i")
-      }
-        )
-        res.status(200).json(movies)
-      } catch (error) {
-        console.log(error)
-      }
-      });
+  //GET SEARCH ROUTE
+  router.get("/search", async(req, res, next) => {
+    try {
+      let movies = await Movie.find({movie_title : new RegExp('^' + req.query.find, "i")
+    })
+    res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+  });
 
+  // GET ROUTES FOR CARROUSELS
   router.get("/carrousel", async(req, res, next) => {
     try {
       let movies = await Movie.find().limit(8)
@@ -70,74 +61,65 @@ const Movie = require('../models/movie');
     } catch (error) {
       console.log(error)
     }
-    });
+  });
     
-    router.get("/carrousel2", async(req, res, next) => {
-      try {
-        let movies = await Movie.find({num_voted_users:{$gte: "44000"}}).limit(8)
+  router.get("/carrousel2", async(req, res, next) => {
+    try {
+      let movies = await Movie.find({num_voted_users:{$gte: "44000"}}).limit(8)
+      res.status(200).json(movies)
+      } catch (error) {
+        console.log(error)
+      }
+  });
+
+  router.get("/carrousel3", async(req, res, next) => {
+    try {
+      let movies = await Movie.find({num_voted_users:{$lte: "20000"}}).limit(8)
+      res.status(200).json(movies)
+      } catch (error) {
+      console.log(error)
+      }
+  });
+
+  // TOP-RATED ROUTE
+  router.get("/top-rated", async(req, res, next) => {
+    try {
+      let movies = await Movie.find()
+      res.status(200).json(movies)
+    } catch (error) {
+      console.log(error)
+    }
+  });
+
+
+  // GET DETAILS ROUTE
+  router.get("/details/:id", async(req, res, next) => {
+    try {
+      let movies = await Movie.findById(req.params.id)
+      res.status(200).json(movies)
+      } catch (error) {
+      console.log(error)
+      }
+  });
+
+  //CREATE ROUTES
+  router.post('/create', (req, res, next) => {   
+    Movie.create(req.body)
+    .then( aNewMovie => {
+      res.status(200).json(aNewMovie);
+    })
+    .catch( err => next(err) )
+  });
+
+  //UPLOAD ROUTES
+  router.get("/upload/:id", async(req, res, next) => {
+    try {
+      let movies = await Movie.findById(req.params.id)
         res.status(200).json(movies)
       } catch (error) {
         console.log(error)
       }
       });
-
-      router.get("/carrousel3", async(req, res, next) => {
-        try {
-          let movies = await Movie.find({num_voted_users:{$lte: "20000"}}).limit(8)
-          res.status(200).json(movies)
-        } catch (error) {
-          console.log(error)
-        }
-        });
-
-  // TOP-RATED ROUTE
-
-  router.get("/top-rated", async(req, res, next) => {
-  try {
-    let movies = await Movie.find()
-    res.status(200).json(movies)
-  } catch (error) {
-    console.log(error)
-  }
-  });
-
-
-  // DETAILS ROUTE
-
-  router.get("/details/:id", async(req, res, next) => {
-    try {
-      let movies = await Movie.findById(req.params.id)
-      res.status(200).json(movies)
-    } catch (error) {
-      console.log(error)
-    }
-    });
-
-    //CREATE ROUTES
-
-    router.post('/create', (req, res, next) => {
-      // console.log('body: ', req.body); ==> here we can see that all
-      // the fields have the same names as the ones in the model so we can simply pass
-      // req.body to the .create() method
-      
-      Movie.create(req.body)
-      .then( aNewMovie => {
-          // console.log('Created new movie: ', aNewMovie);
-          res.status(200).json(aNewMovie);
-      })
-      .catch( err => next(err) )
-  });
-
-  //UPLOAD ROUTES
-
-  router.get("/upload/:id", async(req, res, next) => {
-    try {
-      let movies = await Movie.findById(req.params.id)
-      res.status(200).json(movies)
-    } catch (error) {
-      console.log(error)
-    }
-    });
 
   router.post("/upload/:id", async(req, res, next) => {
     try {
@@ -153,8 +135,7 @@ const Movie = require('../models/movie');
     }
   });
 
-  //DELETE MOVIE
-
+  //ROUTE DELETE MOVIE
   router.post('/delete/:id', async (req, res, next) =>{
     try {
       let deleteMovie = await Movie.findByIdAndRemove(req.params.id )
@@ -164,20 +145,7 @@ const Movie = require('../models/movie');
     }
   });
 
-  //FAVOURITE ROUTES
-
-  // router.get("/private", async (req, res, next) =>{
-  //   try {
-  //     const movieFav = await Movie.findById(favorites)
-  //     console.log(movieFav, "this is the MOVIE id")
-  //     res.status(200).json()
-  //   } catch (error) {
-  //     next(error);
-  //     return;
-  //   }
-  // })
-
-
+  // ROUTES TO ADD FAVOURITES TO YOUR PROFILE
   router.get("/private/favorite/:id", async (req, res, next) => {
     const userId = req.params.id;
     console.log(userId);
@@ -202,6 +170,31 @@ const Movie = require('../models/movie');
         ).populate('favorites')
         console.log("Saved in the db!");
         res.status(200).json("Añadido a favoritos correctamente!")
+    } catch (error) {console.log(error)}
+  });
+
+  //ROUTES TO SHARE MOVIES ON FEED'S HOME
+  router.get("/feed", async (req, res, next) => {
+    try {
+      const feed = await FeedNews.find().populate('user').populate('movie')
+      console.log( feed, "this is the response of feed route backend");
+      res.status(200).json(feed)
+    } catch (error) {
+      next(error);
+      return;
+    }
+  });
+
+  router.post("/feed/share", async (req, res, next) => {
+    try {
+      console.log("entered the route of feed backend");
+      const { userId, movieId } = req.body;
+        await FeedNews.create(
+          userId,
+          {movie: movieId, user: userId}
+        )
+        console.log("Saved in the feed!");
+        res.status(200).json("Añadido a feed!!!!")
     } catch (error) {console.log(error)}
   });
 
