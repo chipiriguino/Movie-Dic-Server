@@ -7,6 +7,29 @@ const User = require("../models/user");
 const Movie = require('../models/movie');
 const FeedNews = require ("../models/FeedNews");
 
+//UPDATE PROFILE USER
+router.get("/updateprofile/:id", async(req, res, next) => {
+  try {
+    let userUpdate = await User.findById(req.params.id);
+    console.log(userUpdate, 'USER BACKEND GEEETTT')
+      res.status(200).json(userUpdate)
+    } catch (error) {
+      console.log(error)
+    }
+    });
+
+router.post("/updateprofile/:id", async(req, res, next) => {
+  try {
+  const {username, mail, image} = req.body;
+  const userId = req.params.id
+
+  let user= await User.findByIdAndUpdate(userId, {username, mail, image }, {new: true})
+  console.log(user, 'USER BACKEND UPDATE')
+    res.status(200).json(user)
+  } catch (error) {
+    console.log(error)
+  }
+});
 
   // GET RANDOM MOVIE ROUTE
   router.get("/random", async(req, res, next) => {
@@ -148,10 +171,8 @@ const FeedNews = require ("../models/FeedNews");
   // ROUTES TO ADD FAVOURITES TO YOUR PROFILE
   router.get("/private/favorite/:id", async (req, res, next) => {
     const userId = req.params.id;
-    console.log(userId);
     try {
       const user = await User.findById(userId).populate('favorites')
-      console.log(user)
       console.log(userId, "this is the user id");
       res.status(200).json(user)
     } catch (error) {
@@ -159,6 +180,7 @@ const FeedNews = require ("../models/FeedNews");
       return;
     }
   });
+  
   router.post("/private/favorite", async (req, res, next) => {
     try {
       console.log("entered the route");
@@ -173,11 +195,20 @@ const FeedNews = require ("../models/FeedNews");
     } catch (error) {console.log(error)}
   });
 
+  //DELETE FAVOURITE FROM YOUR PROFILE
+  router.post("/private/favorite/delete/:id", async (req, res, next) => {
+    try {
+      console.log(req.params.id, "que es req.params.id????");
+        await User.findByIdAndRemove(req.params.id)
+        console.log("Borrado de la db!");
+        res.status(200).json("BORRADO CORRECTAMENTE???????")
+    } catch (error) {console.log(error)}
+  });
+
   //ROUTES TO SHARE MOVIES ON FEED'S HOME
   router.get("/feed", async (req, res, next) => {
     try {
       const feed = await FeedNews.find().populate('user').populate('movie')
-      console.log( feed, "this is the response of feed route backend");
       res.status(200).json(feed)
     } catch (error) {
       next(error);
@@ -196,6 +227,15 @@ const FeedNews = require ("../models/FeedNews");
         console.log("Saved in the feed!");
         res.status(200).json("Añadido a feed!!!!")
     } catch (error) {console.log(error)}
+  });
+
+  router.post('/feed/delete/:id', async (req, res, next) =>{
+    try {
+      let deleteMovie = await FeedNews.findByIdAndRemove(req.params.id )
+      res.status(200).json("Borrado correctamente")
+    } catch (error) {
+      console.log('Error eliminando película, prueba en unos minutos', error);
+    }
   });
 
 module.exports = router;

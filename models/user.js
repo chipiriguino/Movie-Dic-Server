@@ -7,6 +7,7 @@ const userSchema = new Schema({
   mail: String,
   image: {type: String, default: 'https://www.tuexperto.com/wp-content/uploads/2015/07/perfil_01.jpg'},
   favorites: [{type: Schema.Types.ObjectId, ref: 'Movie'}],
+  likes: [{type: String}],
 }, 
 {
   timestamps: {
