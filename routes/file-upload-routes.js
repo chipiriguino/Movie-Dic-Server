@@ -22,7 +22,7 @@ router.post("/upload2", uploader.single("fan_art"), (req, res, next) => {
   res.json({ secure_url: req.file.secure_url });
 });
 
-router.post("/private/profileUpdate", uploader.single("image"), (req, res, next) => {
+router.post("/update/", uploader.single("image"), (req, res, next) => {
 
   if (!req.file) {
     next(new Error("No image uploaded!"));

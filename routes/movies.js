@@ -1,29 +1,27 @@
-// ROUTES OF THE APP, INSIDE THIS, I MANAGE ALL THE ROUTES!!!
-
 const express = require("express");
 const router = express.Router();
 const createError = require("http-errors");
 const User = require("../models/user");
 const Movie = require('../models/movie');
 const FeedNews = require ("../models/FeedNews");
+const axios = require("axios");
 
 //UPDATE PROFILE USER
-router.get("/updateprofile/:id", async(req, res, next) => {
+
+router.get("/private/update/:id", async(req, res, next) => {
   try {
     let userUpdate = await User.findById(req.params.id);
-    console.log(userUpdate, 'USER BACKEND GEEETTT')
       res.status(200).json(userUpdate)
     } catch (error) {
       console.log(error)
     }
     });
 
-router.post("/updateprofile/:id", async(req, res, next) => {
+router.post("/private/update/:id", async(req, res, next) => {
   try {
   const {username, mail, image} = req.body;
-  const userId = req.params.id
-
-  let user= await User.findByIdAndUpdate(userId, {username, mail, image }, {new: true})
+  console.log( req.params.id, "AQUIIIIIIIIIIIIIIIIIIIIIIIIIII")
+  let user= await User.findByIdAndUpdate(req.params.id, {username, mail, image }, {new: true})
   console.log(user, 'USER BACKEND UPDATE')
     res.status(200).json(user)
   } catch (error) {
@@ -47,7 +45,6 @@ router.post("/updateprofile/:id", async(req, res, next) => {
   try {
     let perpage = 20;
     let movies = await Movie.find({imdb_score:{$gte: "8"}}).limit(perpage).skip(req.query.page*20)
-    console.log('MOVIES BACKEND', movies)
     res.status(200).json(movies)
   } catch (error) {
     console.log(error)
@@ -97,7 +94,7 @@ router.post("/updateprofile/:id", async(req, res, next) => {
 
   router.get("/carrousel3", async(req, res, next) => {
     try {
-      let movies = await Movie.find({num_voted_users:{$lte: "20000"}}).limit(8)
+      let movies = await Movie.find({num_voted_users:{$gte: "80000"}}).limit(8)
       res.status(200).json(movies)
       } catch (error) {
       console.log(error)
@@ -114,8 +111,9 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     }
   });
 
+  // --------------> ROUTES MOVIES  <---------------
 
-  // GET DETAILS ROUTE
+  // Route GET ONE MOVIE
   router.get("/details/:id", async(req, res, next) => {
     try {
       let movies = await Movie.findById(req.params.id)
@@ -125,7 +123,7 @@ router.post("/updateprofile/:id", async(req, res, next) => {
       }
   });
 
-  //CREATE ROUTES
+  //Create movie
   router.post('/create', (req, res, next) => {   
     Movie.create(req.body)
     .then( aNewMovie => {
@@ -134,7 +132,7 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     .catch( err => next(err) )
   });
 
-  //UPLOAD ROUTES
+  //Upload movie
   router.get("/upload/:id", async(req, res, next) => {
     try {
       let movies = await Movie.findById(req.params.id)
@@ -147,11 +145,14 @@ router.post("/updateprofile/:id", async(req, res, next) => {
   router.post("/upload/:id", async(req, res, next) => {
     try {
     const {movie_title, genres, director_name,description, poster, fan_art, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score} = req.body.updatedMovie;
-    const movieId = req.params.id
-
-    let movies= await Movie.findByIdAndUpdate(movieId, {movie_title, genres, poster, fan_art, description, director_name, content_rating, country, language,  movie_imdb_link, actor_1_name, actor_2_name, actor_3_name, title_year, imdb_score }, {new: true})
-    //let movies = await Movie.findByIdAndUpdate(req.params.id)
-    console.log(movies)
+    const movieId = req.params.id;
+    let movies= await Movie.findByIdAndUpdate(movieId, {
+      movie_title, genres, poster, fan_art, description,
+      director_name, content_rating, country, language,
+      movie_imdb_link,
+      actor_1_name, actor_2_name, actor_3_name,
+      title_year, imdb_score
+    }, {new: true});
       res.status(200).json(movies)
     } catch (error) {
       console.log(error)
@@ -168,12 +169,13 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     }
   });
 
-  // ROUTES TO ADD FAVOURITES TO YOUR PROFILE
+  // --------> ROUTES FAVOURITES <-------
+
+  //Router GET
   router.get("/private/favorite/:id", async (req, res, next) => {
     const userId = req.params.id;
     try {
       const user = await User.findById(userId).populate('favorites')
-      console.log(userId, "this is the user id");
       res.status(200).json(user)
     } catch (error) {
       next(error);
@@ -181,34 +183,37 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     }
   });
   
+  //Router POST
   router.post("/private/favorite", async (req, res, next) => {
     try {
-      console.log("entered the route");
       const { userId, movieId } = req.body;
         await User.findByIdAndUpdate(
           userId,
           {   $push: {favorites: movieId} },
           { new: true }
         ).populate('favorites')
-        console.log("Saved in the db!");
-        res.status(200).json("Añadido a favoritos correctamente!")
+        res.status(200).json("Añadido a favoritos")
     } catch (error) {console.log(error)}
   });
 
-  //DELETE FAVOURITE FROM YOUR PROFILE
+  //Route DELETE 
   router.post("/private/favorite/delete/:id", async (req, res, next) => {
     try {
-      console.log(req.params.id, "que es req.params.id????");
-        await User.findByIdAndRemove(req.params.id)
-        console.log("Borrado de la db!");
-        res.status(200).json("BORRADO CORRECTAMENTE???????")
+      console.log("Ruta delete");
+      const { userId, movieId } = req.body;
+        await User.findByIdAndDelete(userId, { $push: {favorites: movieId} }).populate('favorites');
+        console.log("Eliminado Favorito!");
+        res.status(200).json("Eliminado con éxito!")
     } catch (error) {console.log(error)}
   });
 
-  //ROUTES TO SHARE MOVIES ON FEED'S HOME
+  // --------> ROUTES FEED <-------
+
+  // Route to GET all model FeedNews
   router.get("/feed", async (req, res, next) => {
     try {
       const feed = await FeedNews.find().populate('user').populate('movie')
+      console.log("FEEEEEEDD", feed, "FEEEDDDD")
       res.status(200).json(feed)
     } catch (error) {
       next(error);
@@ -216,6 +221,7 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     }
   });
 
+  //Route to POST to FeedNews model
   router.post("/feed/share", async (req, res, next) => {
     try {
       console.log("entered the route of feed backend");
@@ -229,6 +235,7 @@ router.post("/updateprofile/:id", async(req, res, next) => {
     } catch (error) {console.log(error)}
   });
 
+  //Route delete from feed
   router.post('/feed/delete/:id', async (req, res, next) =>{
     try {
       let deleteMovie = await FeedNews.findByIdAndRemove(req.params.id )
@@ -237,5 +244,8 @@ router.post("/updateprofile/:id", async(req, res, next) => {
       console.log('Error eliminando película, prueba en unos minutos', error);
     }
   });
+
+  // -------->         <-------
+
 
 module.exports = router;
